@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap');
+html,
+body {
+  height: 100%;
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: 2px;
+background: rgb(0,0,0);
+background: linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.81) 49%, rgba(255,193,7,0.4405112386751575) 50%, rgba(0,0,0,0.8074580173866421) 51%, rgba(0,0,0,0.95) 100%);
+}
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: black;
+  color: white;
+}
+
+h1{
+    margin-bottom: 5%;
+}
+
+div.form-floating{
+    box-shadow: 0px 0px 11px 0px gray;
+}
+
+*:focus{
+    outline-color: orangered;
+}
+
+.form-control:focus {
+  border-color: #ffc107;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 2), 0px 0px 15px 1px #ffc107;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 1440px;
+  padding: 15px;
+  margin: auto;
+  color: black;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+}
+
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+}
+
+
+button[type="submit"]{
+    margin-top: 5%;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  background-color: #fff;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em; 
+  display: inline-grid;
+  place-content: center;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  background-color: orangered;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transition: 120ms transform ease-in-out;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
