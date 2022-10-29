@@ -1,6 +1,6 @@
 <?php
 
-/* * ** CUSTOMER *** */
+// Used for retrieve data of all customer.
 
 function getCustomers() {
     $query = "SELECT user.name, user.email, customer.address, customer.register_date FROM user "
@@ -17,6 +17,8 @@ function getCustomers() {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
+
+// Used for retrieve data of a customer by id.
 
 function getCustomerById($id) {
     $query = "SELECT user.name, user.email, customer.address, customer.register_date FROM user "
@@ -36,6 +38,8 @@ function getCustomerById($id) {
     }
 }
 
+// Used for retrieve data of a customer by name.
+
 function getCustomerByName($name) {
     $query = "SELECT user.email, customer.address, customer.register_date FROM user "
             . "INNER JOIN customer "
@@ -53,7 +57,7 @@ function getCustomerByName($name) {
     }
 }
 
-/* * ** MARKET *** */
+// Used for retreive data of all markets.
 
 function getMarkets() {
     $query = "SELECT user.name, user.email, market.address FROM user "
@@ -70,6 +74,8 @@ function getMarkets() {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
+
+// Used for retreive data of one market by id.
 
 function getMarketById($id) {
     $query = "SELECT user.name, user.email, market.address FROM user "
@@ -89,6 +95,8 @@ function getMarketById($id) {
     }
 }
 
+// Used for retreive data of one market by name.
+
 function getMarketByName($name) {
     $query = "SELECT user.email, market.address FROM user "
             . "INNER JOIN market "
@@ -106,7 +114,7 @@ function getMarketByName($name) {
     }
 }
 
-/* * ** PRODUCT *** */
+/// Used for retreive data of all products.
 
 function getProducts() {
     $query = "SELECT name, normal_price, expr_date FROM product ";
@@ -121,6 +129,8 @@ function getProducts() {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
+
+// Used for retreive data of one product by id.
 
 function getProductById($id) {
     $query = "SELECT name, normal_price, expr_date FROM product WHERE id = ? ";
@@ -137,9 +147,12 @@ function getProductById($id) {
     }
 }
 
-function getProductByName($name) {
+// Used for retreive data of products by name.
+
+function getProductByName($name) {    
     $query = "SELECT normal_price, expr_date FROM product "
-            . "WHERE UPPER(name) LIKE " . '"%' . $name . '%"';
+            . "WHERE UPPER(name) LIKE "
+            . '"%' . $name . '%"';
 
     try {
         global $db;
@@ -151,6 +164,28 @@ function getProductByName($name) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
+
+// Used for retreive data of all products supplied by market and search by product name.
+
+function getProductByNamefromMarket($id, $name) {    
+    $query = "SELECT product.id, product.name, product.stock, product.normal_price, product.disc_price, product.expr_date "
+            . "FROM product "
+            . "WHERE ". $id . " = product.market_id "
+            . "AND UPPER(name) LIKE "
+            . '"%' . $name . '%"';
+    
+    try {
+        global $db;
+        $stmt = $db->query($query);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        header("Content-Type: application/json");
+        echo json_encode($products);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+}
+
+// Used for retreive data of all products supplied by market.
 
 function getProductByMarketId($id) {
     $query = "SELECT name, normal_price, disc_price, expr_date FROM product WHERE market_id = ? ";
@@ -166,6 +201,8 @@ function getProductByMarketId($id) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
+
+// Used for retreive data of purchase history by specific customer.
 
 function getPurchaseHistory($id) {
     $query = "SELECT purchase_history.price, purchase_history.quantity, purchase_history.date, "
@@ -190,7 +227,31 @@ function getPurchaseHistory($id) {
     }
 }
 
-/* * ** CART *** */
+// Used for retreive data of all purchase history.
+
+function getAllPurchaseHistory() {
+    $query = "SELECT purchase_history.price, purchase_history.quantity, purchase_history.date, "
+            . "product.id, product.name, "
+            . "user.id, user.name "
+            . "FROM purchase_history "
+            . "JOIN product "
+            . "ON product.id = purchase_history.product_id "
+            . "JOIN user "
+            . "ON user.id = purchase_history.cust_id ";
+    
+    try {
+        global $db;
+        $stmt = $db->query($query);
+        $purchase_history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        header("Content-Type: application/json");
+        echo json_encode($purchase_history);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';        
+    }
+
+}
+
+// Used for retreive data of cart.
 
 function getCart($id) {
     $query = "SELECT product_id, cust_id, amount FROM cart "
@@ -206,4 +267,34 @@ function getCart($id) {
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
+}
+
+function addProduct() {
+    global $app;
+    $request = $app->request();
+    $products = json_decode($request->getBody())[0];
+    $name = $products->name;
+    $stock = $products->stock;
+    $marketId = $products->market_id;
+    $normalPrice = $products->normal_price;
+    $discPrice = $products->disc_price;
+    $exprDate = $products->expr_date;
+    
+    $query = "INSERT INTO product"
+            . "(name, stock, market_id, normal_price, disc_price, expr_date) "
+            . "VALUES ('$name', '$stock', '$marketId', '$normalPrice', '$discPrice', '$exprDate') ";
+    
+    try {
+       global $db;
+       $db->exec($query);
+       $products->id = $db->lastInsertId();
+       echo json_encode($products);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+
+}
+
+function deleteProduct($param) {
+    
 }

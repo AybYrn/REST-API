@@ -15,14 +15,20 @@ $app->get('/markets', 'getMarkets');
 $app->get('/market/:id',  'getMarketById');
 $app->get('/market/searchMarketName/:name', 'getMarketByName');
 
-$app->get('/products', 'getProducts');
-$app->get('/product/:id', 'getProductById');
-$app->get('/product/searchProductName/:name', 'getProductByName');
-$app->get('/product/productByMarket/:id', 'getProductByMarketId');
+$app->get('/products', 'getProducts'); 
+$app->get('/product/:id', 'getProductById'); 
+$app->get('/product/searchProductName/:name', 'getProductByName'); //customer
+$app->get('/product/searchProductNamefromMarket/:id/:name', 'getProductByNamefromMarket');
+$app->get('/product/productByMarket/:id', 'getProductByMarketId');  //customer
 
 
 $app->get('/cart/:id', 'getCart');
+$app->get('/purchaseHistory', 'getAllPurchaseHistory');
 $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
+
+ $app->post('/product', 'addProduct'); 
+// $app->put('/product/:id', 'updateProduct');
+ $app->delete('/product/:id', 'deleteproduct');
 
 $app->run();
 
