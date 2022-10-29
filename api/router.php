@@ -295,6 +295,39 @@ function addProduct() {
 
 }
 
-function deleteProduct($param) {
+function deleteProduct($id) {
+    try {
+        global $db;
+        $stmt = $db->prepare("DELETE FROM product WHERE id = ? ");
+        $stmt->execute([$id]);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+}
+
+function updateProduct($id) {
+    global $app;
+    $request = $app->request();
+    $products = json_decode($request->getBody())[0];
+    $name = $products->name;
+    $stock = $products->stock;
+    $marketId = $products->market_id;
+    $normalPrice = $products->normal_price;
+    $discPrice = $products->disc_price;
+    $exprDate = $products->expr_date;
     
+    $query = "UPDATE product "
+            . "SET name = '$name', "
+            . "stock = '$stock', market_id = '$marketId', normal_price = '$normalPrice',"
+            . " disc_price = '$discPrice', expr_date = '$exprDate' "
+            . "WHERE id = ? "; 
+            
+    try {
+       global $db;
+       $stmt = $db->prepare($query);
+       $stmt->execute([$id]);
+       echo json_encode($products);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
 }

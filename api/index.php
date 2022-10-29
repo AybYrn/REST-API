@@ -27,8 +27,8 @@ $app->get('/purchaseHistory', 'getAllPurchaseHistory');
 $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
 
  $app->post('/product', 'addProduct'); 
-// $app->put('/product/:id', 'updateProduct');
- $app->delete('/product/:id', 'deleteproduct');
+ $app->put('/product/:id', 'updateProduct');
+ $app->delete('/product/:id', 'deleteProduct');
 
 $app->run();
 
