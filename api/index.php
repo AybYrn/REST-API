@@ -29,6 +29,10 @@ $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
  $app->post('/product', 'addProduct'); 
  $app->put('/product/:id', 'updateProduct');
  $app->delete('/product/:id', 'deleteProduct');
+ 
+ $app->post('/cart', 'addCart'); 
+ $app->put('/cart/:id', 'updateCart');
+ $app->delete('/cart/:id', 'deleteCart');
 
 $app->run();
 

@@ -272,7 +272,7 @@ function getCart($id) {
 function addProduct() {
     global $app;
     $request = $app->request();
-    $products = json_decode($request->getBody())[0];
+    $products = json_decode($request->getBody());
     $name = $products->name;
     $stock = $products->stock;
     $marketId = $products->market_id;
@@ -292,7 +292,6 @@ function addProduct() {
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
-
 }
 
 function deleteProduct($id) {
@@ -308,7 +307,7 @@ function deleteProduct($id) {
 function updateProduct($id) {
     global $app;
     $request = $app->request();
-    $products = json_decode($request->getBody())[0];
+    $products = json_decode($request->getBody());
     $name = $products->name;
     $stock = $products->stock;
     $marketId = $products->market_id;
@@ -330,4 +329,57 @@ function updateProduct($id) {
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
+}
+
+function addCart() {
+    global $app;
+    $request = $app->request();
+    $cart = json_decode($request->getBody());
+    $productId = $cart->product_id;
+    $custId = $cart->cust_id;
+    $amount = $cart->amount;
+    
+    $query = "INSERT INTO cart"
+            . "(product_id, cust_id, amount) "
+            . "VALUES ('$productId', '$custId', '$amount') ";
+    
+    try {
+       global $db;
+       $db->exec($query);
+       echo json_encode($cart);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+
+}
+
+function updateCart($id) {
+    global $app;
+    $request = $app->request();
+    $cart = json_decode($request->getBody());
+    $amount = $cart->amount;
+    
+    $query = "UPDATE cart "
+            . "SET amount = '$amount' "
+            . "WHERE product_id = ? ";
+    
+    try {
+       global $db;
+       $stmt = $db->prepare($query);
+       $stmt->execute([$id]);
+       echo json_encode($cart);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+}
+
+function deleteCart($id) {
+    try {
+        global $db;
+        $stmt = $db->prepare("DELETE FROM cart WHERE product_id = ? ");
+        $stmt->execute([$id]);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+
 }
