@@ -17,9 +17,9 @@ $app->get('/market/searchMarketName/:name', 'getMarketByName');
 
 $app->get('/products', 'getProducts'); 
 $app->get('/product/:id', 'getProductById'); 
-$app->get('/product/searchProductName/:name', 'getProductByName'); //customer
+$app->get('/product/searchProductName/:name', 'getProductByName'); 
 $app->get('/product/searchProductNamefromMarket/:id/:name', 'getProductByNamefromMarket');
-$app->get('/product/productByMarket/:id', 'getProductByMarketId');  //customer
+$app->get('/product/productByMarket/:id', 'getProductByMarketId');  
 
 
 $app->get('/cart/:id', 'getCart');
@@ -31,8 +31,8 @@ $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
  $app->delete('/product/:id', 'deleteProduct');
  
  $app->post('/cart', 'addCart'); 
- $app->put('/cart/:id', 'updateCart');
- $app->delete('/cart/:id', 'deleteCart');
+ $app->put('/cart/:idCust/:idProduct', 'updateCart');
+ $app->delete('/cart/:idCust/:idProduct', 'deleteCart');
 
 $app->run();
 

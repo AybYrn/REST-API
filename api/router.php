@@ -150,14 +150,14 @@ function getProductById($id) {
 // Used for retreive data of products by name.
 
 function getProductByName($name) {    
-    $query = "SELECT normal_price, expr_date FROM product "
+    $query = "SELECT name, normal_price, disc_price, expr_date FROM product "
             . "WHERE UPPER(name) LIKE "
             . '"%' . $name . '%"';
 
     try {
         global $db;
         $stmt = $db->query($query);
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        $product = $stmt->fetchAll(PDO::FETCH_ASSOC);
         header("Content-Type: application/json");
         echo json_encode($product);
     } catch (PDOException $e) {
@@ -254,7 +254,9 @@ function getAllPurchaseHistory() {
 // Used for retreive data of cart.
 
 function getCart($id) {
-    $query = "SELECT product_id, cust_id, amount FROM cart "
+    $query = "SELECT product.name, cart.product_id, cart.cust_id, cart.amount FROM cart "
+            . "INNER JOIN product "
+            . "ON cart.product_id = product.id "
             . "WHERE  cust_id = ? ";
 
     try {
@@ -310,14 +312,13 @@ function updateProduct($id) {
     $products = json_decode($request->getBody());
     $name = $products->name;
     $stock = $products->stock;
-    $marketId = $products->market_id;
     $normalPrice = $products->normal_price;
     $discPrice = $products->disc_price;
     $exprDate = $products->expr_date;
     
     $query = "UPDATE product "
             . "SET name = '$name', "
-            . "stock = '$stock', market_id = '$marketId', normal_price = '$normalPrice',"
+            . "stock = '$stock', normal_price = '$normalPrice',"
             . " disc_price = '$discPrice', expr_date = '$exprDate' "
             . "WHERE id = ? "; 
             
@@ -353,7 +354,7 @@ function addCart() {
 
 }
 
-function updateCart($id) {
+function updateCart($idC, $idP) {
     global $app;
     $request = $app->request();
     $cart = json_decode($request->getBody());
@@ -361,23 +362,24 @@ function updateCart($id) {
     
     $query = "UPDATE cart "
             . "SET amount = '$amount' "
-            . "WHERE product_id = ? ";
+            . "WHERE product_id = ? "
+            . "AND cust_id = ? ";
     
     try {
        global $db;
        $stmt = $db->prepare($query);
-       $stmt->execute([$id]);
+       $stmt->execute([$idP, $idC]);
        echo json_encode($cart);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
 
-function deleteCart($id) {
+function deleteCart($idC, $idP) {
     try {
         global $db;
-        $stmt = $db->prepare("DELETE FROM cart WHERE product_id = ? ");
-        $stmt->execute([$id]);
+        $stmt = $db->prepare("DELETE FROM cart WHERE product_id = ? AND cust_id = ? ");
+        $stmt->execute([$idP, $idC]);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
