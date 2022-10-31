@@ -36,6 +36,4 @@ $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
 
 $app->run();
 
-?>
-
 
