@@ -47,13 +47,100 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
             }
             a.nav-link:hover{
                 color: black;
-            } 
-       </style>
+            }
+        </style>
     </head>
     <body>
         <script>
             $(function () {
                 $('header').load("header.html");
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost/WD_Assesment_1/api/cart/8",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        var cnt = 0;
+                        data.forEach(p => {
+                            cnt += parseInt(p.amount);
+                            var pic = {location: "default.png"};
+                            $.ajax({
+                                type: "GET",
+                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.product_id,
+                                success: function (data) {
+
+                                    var pics = JSON.parse(data);
+
+                                    if (pics.length !== 0) {
+                                        pic = pics[0];
+                                    }
+                                },
+                                async: false
+                            });
+                            var price = p.disc_price === null ? p.normal_price : p.disc_price;
+                            $(".cart").append(`               
+                                <div class="row mb-3">
+                                    <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                        <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                                            <img src="./images/products/` + pic.location + `"
+                                                 class="w-100" alt="Blue Jeans Jacket" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                        <p><strong>` + p.name + `</strong></p>
+                                        <button type="button" class="btn btn-light btn-outline-danger btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+                                                title="Remove item">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 15L10 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M14 15L14 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M3 7H21V7C20.0681 7 19.6022 7 19.2346 7.15224C18.7446 7.35523 18.3552 7.74458 18.1522 8.23463C18 8.60218 18 9.06812 18 10V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V10C6 9.06812 6 8.60218 5.84776 8.23463C5.64477 7.74458 5.25542 7.35523 4.76537 7.15224C4.39782 7 3.93188 7 3 7V7Z" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M10.0681 3.37059C10.1821 3.26427 10.4332 3.17033 10.7825 3.10332C11.1318 3.03632 11.5597 3 12 3C12.4403 3 12.8682 3.03632 13.2175 3.10332C13.5668 3.17033 13.8179 3.26427 13.9319 3.37059" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                                            </svg>
+                                        </button>
+                                        <button type="button" class="btn btn-light btn-outline-warning btn-sm mb-2" data-mdb-toggle="tooltip"
+                                                title="Move to the wish list">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.45067 13.9082L11.4033 20.4395C11.6428 20.6644 11.7625 20.7769 11.9037 20.8046C11.9673 20.8171 12.0327 20.8171 12.0963 20.8046C12.2375 20.7769 12.3572 20.6644 12.5967 20.4395L19.5493 13.9082C21.5055 12.0706 21.743 9.0466 20.0978 6.92607L19.7885 6.52734C17.8203 3.99058 13.8696 4.41601 12.4867 7.31365C12.2913 7.72296 11.7087 7.72296 11.5133 7.31365C10.1304 4.41601 6.17972 3.99058 4.21154 6.52735L3.90219 6.92607C2.25695 9.0466 2.4945 12.0706 4.45067 13.9082Z" stroke="#33363F" stroke-width="2"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 mb-4 my-auto">
+
+                                        <div class="d-flex h-25" style="max-width: 300px">
+                                            <button class="me-2 quantity"
+                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8Z" fill="black"/>
+                                                </svg>
+                                            </button>
+
+                                            <div class="form-outline">
+                                                <input id="form1" min="0" name="quantity" value="` + p.amount + `" type="number" class="form-control" />
+                                                <label class="form-label mt-1" for="form1">Quantity</label>
+                                            </div>
+
+                                            <button class=" ms-2 quantity"
+                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                                <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5C8.27614 3.5 8.5 3.72386 8.5 4V8C8.5 8.27614 8.27614 8.5 8 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H7.5V4C7.5 3.72386 7.72386 3.5 8 3.5Z" fill="black"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 8C7.5 7.72386 7.72386 7.5 8 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H8.5V12C8.5 12.2761 8.27614 12.5 8 12.5C7.72386 12.5 7.5 12.2761 7.5 12V8Z" fill="black"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <p class="text-start text-md-center mt-4">
+                                            <strong>€ ` + (p.amount * price) + `</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                        $(".numOfItems").append(cnt);
+                    }
+                });
             });
         </script>
         <header></header>
@@ -70,82 +157,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                 <div class="col-md-8">
                     <div class="card mb-4">
                         <div class="card-header py-3">
-                            <h5 class="mb-0">Cart - 2 items</h5>
+                            <h5 class="mb-0">Cart - <span class="numOfItems"></span> items</h5>
                         </div>
-                        <div class="card-body">
-                            <!-- Single item -->
-                            <div class="row">
-                                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
-                                    <!-- Image -->
-                                    <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
-                                        <img src="https://picsum.photos/200/300"
-                                             class="w-100" alt="Blue Jeans Jacket" />
-                                        <a href="#!">
-                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
-                                        </a>
-                                    </div>
-                                    <!-- Image -->
-                                </div>
+                        <div class="card-body cart">
 
-                                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
-                                    <!-- Data -->
-                                    <p><strong>Blue denim shirt</strong></p>
-                                    <p>Color: blue</p>
-                                    <p>Size: M</p>
-                                    <button type="button" class="btn btn-light btn-outline-danger btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
-                                            title="Remove item">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M10 15L10 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-                                        <path d="M14 15L14 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-                                        <path d="M3 7H21V7C20.0681 7 19.6022 7 19.2346 7.15224C18.7446 7.35523 18.3552 7.74458 18.1522 8.23463C18 8.60218 18 9.06812 18 10V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V10C6 9.06812 6 8.60218 5.84776 8.23463C5.64477 7.74458 5.25542 7.35523 4.76537 7.15224C4.39782 7 3.93188 7 3 7V7Z" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-                                        <path d="M10.0681 3.37059C10.1821 3.26427 10.4332 3.17033 10.7825 3.10332C11.1318 3.03632 11.5597 3 12 3C12.4403 3 12.8682 3.03632 13.2175 3.10332C13.5668 3.17033 13.8179 3.26427 13.9319 3.37059" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-                                        </svg>
-
-                                    </button>
-                                    <button type="button" class="btn btn-light btn-outline-warning btn-sm mb-2" data-mdb-toggle="tooltip"
-                                            title="Move to the wish list">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.45067 13.9082L11.4033 20.4395C11.6428 20.6644 11.7625 20.7769 11.9037 20.8046C11.9673 20.8171 12.0327 20.8171 12.0963 20.8046C12.2375 20.7769 12.3572 20.6644 12.5967 20.4395L19.5493 13.9082C21.5055 12.0706 21.743 9.0466 20.0978 6.92607L19.7885 6.52734C17.8203 3.99058 13.8696 4.41601 12.4867 7.31365C12.2913 7.72296 11.7087 7.72296 11.5133 7.31365C10.1304 4.41601 6.17972 3.99058 4.21154 6.52735L3.90219 6.92607C2.25695 9.0466 2.4945 12.0706 4.45067 13.9082Z" stroke="#33363F" stroke-width="2"/>
-                                        </svg>
-
-                                    </button>
-                                    <!-- Data -->
-                                </div>
-
-                                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-
-                                    <div class="d-flex h-25" style="max-width: 300px">
-                                        <button class="me-2 quantity"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                            <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8Z" fill="black"/>
-                                            </svg>
-
-                                        </button>
-
-                                        <div class="form-outline">
-                                            <input id="form1" min="0" name="quantity" value="1" type="number" class="form-control" />
-                                            <label class="form-label mt-1" for="form1">Quantity</label>
-                                        </div>
-
-                                        <button class=" ms-2 quantity"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                            <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5C8.27614 3.5 8.5 3.72386 8.5 4V8C8.5 8.27614 8.27614 8.5 8 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H7.5V4C7.5 3.72386 7.72386 3.5 8 3.5Z" fill="black"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 8C7.5 7.72386 7.72386 7.5 8 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H8.5V12C8.5 12.2761 8.27614 12.5 8 12.5C7.72386 12.5 7.5 12.2761 7.5 12V8Z" fill="black"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
-                                            </svg>
-
-                                        </button>
-                                    </div>
-                                    <!-- Price -->
-                                    <p class="text-start text-md-center mt-4">
-                                        <strong>$17.99</strong>
-                                    </p>
-                                    <!-- Price -->
-                                </div>
-                            </div>
                         </div>
                     </div>
 

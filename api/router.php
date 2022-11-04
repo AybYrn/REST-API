@@ -270,7 +270,7 @@ function getAllPurchaseHistory() {
 // Used for retreive data of cart.
 
 function getCart($id) {
-    $query = "SELECT product.name, cart.product_id, cart.cust_id, cart.amount FROM cart "
+    $query = "SELECT product.name, product.normal_price, product.disc_price ,cart.product_id, cart.cust_id, cart.amount FROM cart "
             . "INNER JOIN product "
             . "ON cart.product_id = product.id "
             . "WHERE  cust_id = ? ";

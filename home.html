@@ -63,7 +63,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                     url: "http://localhost/WD_Assesment_1/api/products",
                     success: function (data) {
                         data.forEach(p => {
-                            var pic = {location: "default.jpg"};
+                            var pic = {location: "default.png"};
                             $.ajax({
                                 type:"GET",
                                 url:"http://localhost/WD_Assesment_1/api/product/pic/"+p.id,
@@ -83,7 +83,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                         <img src="./images/products/`+ pic.location +`" class="card-img-top" alt="...">
                                         <div class="card-body text-end">
                                             <h5 class="card-title text-center text-truncate" title="` + p.name + `">` + p.name + `</h5>
-                                            <p class="card-text">` + p.normal_price + ` ` + p.disc_price + ` ` + p.expr_date + `</p>
+                                            <p class="card-text">` + p.normal_price + ` € ` + p.disc_price + ` ` + p.expr_date + `</p>
                                             <a href="#" class="btn btn-primary">Go somewhere</a>
                                         </div>
                                     </div>
@@ -96,7 +96,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                 });
             });
         </script>
-        <div class="container-xxl my-5">
+        <div class="container-xxl my-2">
             <h3 class="mb-5 text-center text-uppercase">Products</h3>
 
             <div class="row products"></div>
