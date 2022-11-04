@@ -15,15 +15,57 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
         <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
         <link rel="manifest" href="images/favicon/site.webmanifest">
-        
+
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
         <style>
             button.quantity{
                 height: 40px;
+                border: none;
+                background-color: #ffffff;
             }
-        </style>
+            :root {
+                --blue: #007bff;
+                --indigo: #6610f2;
+                --purple: #6f42c1;
+                --pink: #e83e8c;
+                --red: #dc3545;
+                --orange: #fd7e14;
+                --yellow: #ffc107;
+                --green: #28a745;
+                --teal: #20c997;
+                --cyan: #17a2b8;
+                --white: #fff;
+                --gray: #6c757d;
+                --gray-dark: #343a40;
+                --bs-border-radius-sm: 0.70rem;
+                --bs-orange: #fd7e14;
+
+            }
+            a.nav-link{
+                color: var(--gray);
+            }
+            a.nav-link:hover{
+                color: black;
+            } 
+       </style>
     </head>
     <body>
-        <div class="container py-5">
+        <script>
+            $(function () {
+                $('header').load("header.html");
+            });
+        </script>
+        <header></header>
+        <div class="container">
+            <h5 class="mt-5">
+                <a href="home.html" class="text-body text-decoration-none text-center">
+                    <svg class=" mb-1 ms-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12L4.29289 11.2929L3.58579 12L4.29289 12.7071L5 12ZM17 13C17.5523 13 18 12.5523 18 12C18 11.4477 17.5523 11 17 11V13ZM8.29289 7.29289L4.29289 11.2929L5.70711 12.7071L9.70711 8.70711L8.29289 7.29289ZM4.29289 12.7071L8.29289 16.7071L9.70711 15.2929L5.70711 11.2929L4.29289 12.7071ZM5 13H17V11H5V13Z" fill="#33363F"/>
+                    </svg>
+                    Continue shopping</a>
+            </h5>
+
             <div class="row d-flex justify-content-center my-4">
                 <div class="col-md-8">
                     <div class="card mb-4">
@@ -71,11 +113,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 </div>
 
                                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-                                    
+
                                     <div class="d-flex h-25" style="max-width: 300px">
-                                        <button class="btn btn-light btn-outline-warning px-3 me-2 quantity"
+                                        <button class="me-2 quantity"
                                                 onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8Z" fill="black"/>
                                             </svg>
@@ -87,9 +129,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                             <label class="form-label mt-1" for="form1">Quantity</label>
                                         </div>
 
-                                        <button class="btn btn-light btn-outline-warning px-3 ms-2 quantity"
+                                        <button class=" ms-2 quantity"
                                                 onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5C8.27614 3.5 8.5 3.72386 8.5 4V8C8.5 8.27614 8.27614 8.5 8 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H7.5V4C7.5 3.72386 7.72386 3.5 8 3.5Z" fill="black"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 8C7.5 7.72386 7.72386 7.5 8 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H8.5V12C8.5 12.2761 8.27614 12.5 8 12.5C7.72386 12.5 7.5 12.2761 7.5 12V8Z" fill="black"/>
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
@@ -98,7 +140,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                         </button>
                                     </div>
                                     <!-- Price -->
-                                    <p class="text-start text-md-center mt-2">
+                                    <p class="text-start text-md-center mt-4">
                                         <strong>$17.99</strong>
                                     </p>
                                     <!-- Price -->
@@ -161,7 +203,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 </li>
                             </ul>
 
-                            <button type="button" class="btn btn-outline-secondary btn-warning btn-lg btn-block">
+                            <button type="button" class="btn btn-outline-dark btn-warning btn-lg btn-block">
                                 Go to checkout
                             </button>
                         </div>

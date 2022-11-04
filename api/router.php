@@ -38,6 +38,22 @@ function getCustomerById($id) {
     }
 }
 
+function getProductPic($id) {
+    $query = "SELECT location FROM product_picture "
+            . "WHERE product_id = ? ";
+
+    try {
+        global $db;
+        $stmt = $db->prepare($query);
+        $stmt->execute([$id]);
+        $pictures = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        header("Content-Type: application/json");
+        echo json_encode($pictures);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+}
+
 // Used for retrieve data of a customer by name.
 
 function getCustomerByName($name) {
@@ -117,7 +133,7 @@ function getMarketByName($name) {
 /// Used for retreive data of all products.
 
 function getProducts() {
-    $query = "SELECT name, normal_price, expr_date FROM product ";
+    $query = "SELECT * FROM product ";
 
     try {
         global $db;

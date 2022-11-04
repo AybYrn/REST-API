@@ -20,7 +20,7 @@ $app->get('/product/:id', 'getProductById');
 $app->get('/product/searchProductName/:name', 'getProductByName'); 
 $app->get('/product/searchProductNamefromMarket/:id/:name', 'getProductByNamefromMarket');
 $app->get('/product/productByMarket/:id', 'getProductByMarketId');  
-
+$app->get('/product/pic/:id', 'getProductPic');
 
 $app->get('/cart/:id', 'getCart');
 $app->get('/purchaseHistory', 'getAllPurchaseHistory');
