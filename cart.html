@@ -17,7 +17,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
         <link rel="manifest" href="images/favicon/site.webmanifest">
         
         <style>
-            button.btn{
+            button.quantity{
                 height: 40px;
             }
         </style>
@@ -71,9 +71,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 </div>
 
                                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-                                    <!-- Quantity -->
-                                    <div class="d-flex h-25 mb-4" style="max-width: 300px">
-                                        <button class="btn btn-light btn-outline-warning btn-sm px-3 me-2"
+                                    
+                                    <div class="d-flex h-25" style="max-width: 300px">
+                                        <button class="btn btn-light btn-outline-warning px-3 me-2 quantity"
                                                 onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
                                             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
@@ -84,10 +84,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
                                         <div class="form-outline">
                                             <input id="form1" min="0" name="quantity" value="1" type="number" class="form-control" />
-                                            <label class="form-label" for="form1">Quantity</label>
+                                            <label class="form-label mt-1" for="form1">Quantity</label>
                                         </div>
 
-                                        <button class="btn btn-light btn-outline-warning btn-sm px-3 ms-2"
+                                        <button class="btn btn-light btn-outline-warning px-3 ms-2 quantity"
                                                 onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
                                             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5C8.27614 3.5 8.5 3.72386 8.5 4V8C8.5 8.27614 8.27614 8.5 8 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H7.5V4C7.5 3.72386 7.72386 3.5 8 3.5Z" fill="black"/>
@@ -97,10 +97,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
                                         </button>
                                     </div>
-                                    <!-- Quantity -->
-
                                     <!-- Price -->
-                                    <p class="text-start text-md-center">
+                                    <p class="text-start text-md-center mt-2">
                                         <strong>$17.99</strong>
                                     </p>
                                     <!-- Price -->
