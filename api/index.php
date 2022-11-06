@@ -33,7 +33,7 @@ $app->get('/purchaseHistory/:id', 'getPurchaseHistory');
  $app->post('/cart', 'addCart'); 
  $app->put('/cart/:idCust/:idProduct', 'updateCart');
  $app->delete('/cart/:idCust/:idProduct', 'deleteCart');
-
+ 
 $app->run();
 
 

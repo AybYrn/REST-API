@@ -1,3 +1,6 @@
+<?php
+$userId = 8;
+?>
 <!DOCTYPE html>
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -53,31 +56,73 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
     <body>
         <script>
             $(function () {
-                $('header').load("header.html");
 
+                function updateItemCount() {
+                    var cnt = 0;
+                    items.forEach(p => {
+                        cnt += parseInt(p.amount);
+                    });
+                    $(".numOfItems").html("").append(cnt);
+                }
+
+                function updatePrice() {
+                    var totalPrice = 0;
+                    items.forEach(p => {
+                        var price = p.disc_price === null ? p.normal_price : p.disc_price;
+                        totalPrice += parseFloat(price) * parseInt(p.amount);
+                    });
+                    totalPrice = totalPrice.toFixed(2);
+                    $(".totalPrice").html("").append("€ " + totalPrice);
+                }
+
+                function updateProductPrice() {
+                    var totalPrice = 0;
+                    items.forEach(p => {
+                        var price = p.disc_price === null ? p.normal_price : p.disc_price;
+                        totalPrice = parseFloat(price) * parseInt(p.amount);
+                        totalPrice = totalPrice.toFixed(2);
+                        $(".totalProductPrice").children("#" + p.product_id).html("").append("€ " + totalPrice);
+                    });
+                }
+
+                function deleteProduct(id) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "http://localhost/WD_Assesment_1/api/cart/<?= $userId ?>/" + id,
+                        success: function (data) {
+//                            items = items.splice(items.findIndex(i => i.product_id === id), 1);
+                            items = items.filter(i => {
+                                return parseInt(i.product_id) !== id;
+                            });
+                            console.log(items);
+                            updateItemCount();
+                            updatePrice();
+                            updateProductPrice();
+                        }
+                    });
+                }
+
+                $('header').load("header.html");
+                var items;
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost/WD_Assesment_1/api/cart/8",
+                    url: "http://localhost/WD_Assesment_1/api/cart/<?= $userId ?>",
                     success: function (data) {
                         data = JSON.parse(data);
-                        var cnt = 0;
+                        items = data;
                         data.forEach(p => {
-                            cnt += parseInt(p.amount);
                             var pic = {location: "default.png"};
                             $.ajax({
                                 type: "GET",
                                 url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.product_id,
                                 success: function (data) {
-
                                     var pics = JSON.parse(data);
-
                                     if (pics.length !== 0) {
                                         pic = pics[0];
                                     }
                                 },
                                 async: false
                             });
-                            var price = p.disc_price === null ? p.normal_price : p.disc_price;
                             $(".cart").append(`               
                                 <div class="row mb-3">
                                     <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
@@ -89,8 +134,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
                                     <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
                                         <p><strong>` + p.name + `</strong></p>
-                                        <button type="button" class="btn btn-light btn-outline-danger btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
-                                                title="Remove item">
+                                        <button type="button" class="btn btn-light btn-outline-danger btn-sm me-1 mb-2 delete" data-mdb-toggle="tooltip"
+                                                title="Remove item" id="` + p.product_id + `">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M10 15L10 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
                                             <path d="M14 15L14 12" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
@@ -110,20 +155,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
                                         <div class="d-flex h-25" style="max-width: 300px">
                                             <button class="me-2 quantity"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown(); $(this).parent().children('div').children('input').trigger('change')">
                                                 <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M14 1H2C1.44772 1 1 1.44772 1 2V14C1 14.5523 1.44772 15 2 15H14C14.5523 15 15 14.5523 15 14V2C15 1.44772 14.5523 1 14 1ZM2 0C0.895431 0 0 0.895431 0 2V14C0 15.1046 0.895431 16 2 16H14C15.1046 16 16 15.1046 16 14V2C16 0.895431 15.1046 0 14 0H2Z" fill="black"/>
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8Z" fill="black"/>
                                                 </svg>
                                             </button>
 
-                                            <div class="form-outline">
-                                                <input id="form1" min="0" name="quantity" value="` + p.amount + `" type="number" class="form-control" />
+                                            <div class="form-outline" id="` + p.product_id + `">
+                                                <input id="form1" min="0" name="quantity" value="` + p.amount + `" type="number" class="quantityInput form-control" />
                                                 <label class="form-label mt-1" for="form1">Quantity</label>
                                             </div>
 
                                             <button class=" ms-2 quantity"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp(); $(this).parent().children('div').children('input').trigger('change')">
                                                 <svg class=" mb-1" width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M8 3.5C8.27614 3.5 8.5 3.72386 8.5 4V8C8.5 8.27614 8.27614 8.5 8 8.5H4C3.72386 8.5 3.5 8.27614 3.5 8C3.5 7.72386 3.72386 7.5 4 7.5H7.5V4C7.5 3.72386 7.72386 3.5 8 3.5Z" fill="black"/>
                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 8C7.5 7.72386 7.72386 7.5 8 7.5H12C12.2761 7.5 12.5 7.72386 12.5 8C12.5 8.27614 12.2761 8.5 12 8.5H8.5V12C8.5 12.2761 8.27614 12.5 8 12.5C7.72386 12.5 7.5 12.2761 7.5 12V8Z" fill="black"/>
@@ -131,18 +176,53 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                                 </svg>
                                             </button>
                                         </div>
-                                        <p class="text-start text-md-center mt-4">
-                                            <strong>€ ` + (p.amount * price) + `</strong>
+                                        <p class="text-start text-md-center mt-4 totalProductPrice">
+                                            <strong id="` + p.product_id + `"></strong>
                                         </p>
                                     </div>
                                 </div>
                             `);
                         });
-                        $(".numOfItems").append(cnt);
+                        $("input.quantityInput").change(
+                                function () {
+                                    var amountUpdate = parseInt($(this).val());
+                                    var pId = $(this).parent().attr('id');
+                                    console.log(items);
+                                    if (amountUpdate === 0) {
+                                        $(this).parent().parent().parent().prev().children("button.delete").trigger("click");
+                                    } else
+                                    {
+                                        $.ajax({
+                                            type: "PUT",
+                                            url: "http://localhost/WD_Assesment_1/api/cart/" + <?= $userId ?> + "/" + pId,
+                                            data: JSON.stringify({amount: amountUpdate}),
+                                            success: function (data) {
+                                                items.find(i => {
+                                                    return pId === i.product_id;
+                                                }).amount = amountUpdate;
+
+                                                updateItemCount();
+                                                updatePrice();
+                                                updateProductPrice();
+                                            },
+                                            error: function (data) {
+                                                console.log(data);
+                                            }
+                                        });
+                                    }
+                                });
+                        $(".delete").click(function () {
+                            deleteProduct(parseInt($(this).attr("id")));
+                            $(this).parent().parent().remove();
+                        });
+                        updateItemCount();
+                        updatePrice();
+                        updateProductPrice();
                     }
                 });
             });
         </script>
+        <div id="userId" style="display: none;"></div>
         <header></header>
         <div class="container">
             <h5 class="mt-5">
@@ -200,11 +280,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 <li
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                                     Products
-                                    <span>$53.98</span>
+                                    <span class="totalPrice"></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                     Shipping
-                                    <span>Gratis</span>
+                                    <span>Free</span>
                                 </li>
                                 <li
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
@@ -214,7 +294,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                             <p class="mb-0">(including VAT)</p>
                                         </strong>
                                     </div>
-                                    <span><strong>$53.98</strong></span>
+                                    <span><strong class="totalPrice"></strong></span>
                                 </li>
                             </ul>
 
