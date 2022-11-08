@@ -1,11 +1,13 @@
-<!DOCTYPE html>
+<?php
+$userId = 8;
+?><!DOCTYPE html>
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this template
 -->
 <html>
     <head>
-        <title>HOME</title>
+        <title>Order</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -43,64 +45,65 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
             a.nav-link:hover{
                 color: black;
             }
-            h3{
-                color: orangered;
+            img{
+                max-width: 10%;
             }
-
         </style>
     </head>
     <body>
         <script>
+
             $(function () {
+
                 $('header').load("header.html");
-            });
-        </script>
-        <header></header>
-        <script>
-            $(document).ready(function () {
+
+                var items;
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost/WD_Assesment_1/api/products",
+                    url: "http://localhost/WD_Assesment_1/api/purchaseHistory/<?= $userId ?>",
                     success: function (data) {
+                        data = JSON.parse(data);
+                        items = data;
                         data.forEach(p => {
                             var pic = {location: "default.png"};
                             $.ajax({
-                                type:"GET",
-                                url:"http://localhost/WD_Assesment_1/api/product/pic/"+p.id,
-                                success: function(data){
+                                type: "GET",
+                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.product_id,
+                                success: function (data) {
                                     var pics = JSON.parse(data);
-                                    if (pics.length !== 0)
+                                    
+                                    if (pics.length !== 0) {
                                         pic = pics[0];
+                                    }
                                 },
-                                async:false
+                                async: false
                             });
-                            if (p.disc_price === null){
-                                p.disc_price = "";
-                            }
-                            $(".products").append(`
-                                <div class="col mb-5">
-                                    <div class="card" style="width: 18rem;">
-                                        <img src="./images/products/`+ pic.location +`" class="card-img-top" alt="...">
-                                        <div class="card-body text-end">
-                                            <h5 class="card-title text-center text-truncate" title="` + p.name + `">` + p.name + `</h5>
-                                            <p class="card-text">` + p.normal_price + ` € ` + p.disc_price + ` ` + p.expr_date + `</p>
-                                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                                        </div>
+
+                            $(".order").append(`
+                            <div class="row">
+                                <div class="col-1">
+                                    <img src="./images/products/` + pic.location + `" class="img-fluid rounded-start small" >
+                                </div>
+                                <div class="col-8 my-auto ms-3">
+                                    <div>
+                                        <h5 class="productName">` + p.name + `</h5>
+                                        <p><small class="text-muted productDate">` + p.date + `</small></p>
+                                        <p><small class="text-muted productPriceQuantity">` + p.price + ` X ` + p.quantity + `</small></p>
                                     </div>
                                 </div>
-                            `);
-                        }
-                        );
-                    },
-                    dataType: "json"
+                            </div>
+                        `);
+                        });
+                    }
                 });
             });
+
+
+
         </script>
-        <div class="container-xxl my-2">
-            <h3 class="mb-5 text-center text-uppercase">Products</h3>
+        <header></header>
+        <div class="container mt-3 order">
 
-            <div class="row products"></div>
         </div>
-
     </body>
 </html>

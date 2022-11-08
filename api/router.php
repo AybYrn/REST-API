@@ -21,7 +21,7 @@ function getCustomers() {
 // Used for retrieve data of a customer by id.
 
 function getCustomerById($id) {
-    $query = "SELECT user.name, user.email, customer.address, customer.register_date FROM user "
+    $query = "SELECT user.name, user.email, user.phone_number, user.profile_photo, customer.address, customer.register_date FROM user "
             . "INNER JOIN customer "
             . "ON user.id = customer.id "
             . "WHERE customer.id = ? ";
@@ -221,15 +221,13 @@ function getProductByMarketId($id) {
 // Used for retreive data of purchase history by specific customer.
 
 function getPurchaseHistory($id) {
-    $query = "SELECT purchase_history.price, purchase_history.quantity, purchase_history.date, "
-            . "product.id, product.name, "
-            . "user.id, user.name "
+    $query = "SELECT purchase_history.product_id, purchase_history.price, purchase_history.quantity, purchase_history.date, "
+            . "product.name "
             . "FROM purchase_history "
             . "JOIN product "
             . "ON product.id = purchase_history.product_id "
-            . "JOIN user "
-            . "ON user.id = purchase_history.cust_id "
-            . "WHERE product.market_id = ? ";
+            . "WHERE purchase_history.cust_id = ? "
+            . "ORDER BY purchase_history.date ";
 
     try {
         global $db;
