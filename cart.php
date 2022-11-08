@@ -90,7 +90,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                         type: "DELETE",
                         url: "http://localhost/WD_Assesment_1/api/cart/<?= $userId ?>/" + id,
                         success: function (data) {
-//                            items = items.splice(items.findIndex(i => i.product_id === id), 1);
                             items = items.filter(i => {
                                 return parseInt(i.product_id) !== id;
                             });

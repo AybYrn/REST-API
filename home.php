@@ -1,3 +1,6 @@
+<?php
+    $userId = 8;
+?>
 <!DOCTYPE html>
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -58,6 +61,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
         <header></header>
         <script>
             $(document).ready(function () {
+
+                function addProductToCart(id) {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost/WD_Assesment_1/api/cart",
+                        data: JSON.stringify({product_id: id, cust_id: <?= $userId ?> , amount:1}),
+                        success: function (data) {
+                            data = JSON.parse(data);
+                        }
+                    });
+                }
+
                 $.ajax({
                     type: "GET",
                     url: "http://localhost/WD_Assesment_1/api/products",
@@ -65,32 +80,36 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                         data.forEach(p => {
                             var pic = {location: "default.png"};
                             $.ajax({
-                                type:"GET",
-                                url:"http://localhost/WD_Assesment_1/api/product/pic/"+p.id,
-                                success: function(data){
+                                type: "GET",
+                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.id,
+                                success: function (data) {
                                     var pics = JSON.parse(data);
                                     if (pics.length !== 0)
                                         pic = pics[0];
                                 },
-                                async:false
+                                async: false
                             });
-                            if (p.disc_price === null){
+                            if (p.disc_price === null) {
                                 p.disc_price = "";
                             }
+                            console.log(p);
                             $(".products").append(`
                                 <div class="col mb-5">
                                     <div class="card" style="width: 18rem;">
-                                        <img src="./images/products/`+ pic.location +`" class="card-img-top" alt="...">
+                                        <img src="./images/products/` + pic.location + `" class="card-img-top" alt="...">
                                         <div class="card-body text-end">
                                             <h5 class="card-title text-center text-truncate" title="` + p.name + `">` + p.name + `</h5>
                                             <p class="card-text">` + p.normal_price + ` € ` + p.disc_price + ` ` + p.expr_date + `</p>
-                                            <a href="#" class="btn btn-warning rounded-pill">Add</a>
+                                            <a href="#" class="btn btn-warning rounded-pill add" id="` + p.id + `">Add</a>
                                         </div>
                                     </div>
                                 </div>
                             `);
-                        }
+                        }                                
                         );
+                        $(".add").click(function (){
+                            addProductToCart(parseInt($(this).attr("id")));
+                        });
                     },
                     dataType: "json"
                 });
