@@ -132,8 +132,10 @@ function getMarketByName($name) {
 
 /// Used for retreive data of all products.
 
-function getProducts() {
-    $query = "SELECT * FROM product ";
+function getProducts($pageNumber) {
+    $itemCnt = 12;
+    $start = ($pageNumber - 1) * $itemCnt;
+    $query = "SELECT * FROM product LIMIT $start, $itemCnt";
 
     try {
         global $db;
@@ -165,7 +167,7 @@ function getProductById($id) {
 
 // Used for retreive data of products by name.
 
-function getProductByName($name) {    
+function getProductByName($name) {
     $query = "SELECT name, normal_price, disc_price, expr_date FROM product "
             . "WHERE UPPER(name) LIKE "
             . '"%' . $name . '%"';
@@ -183,13 +185,13 @@ function getProductByName($name) {
 
 // Used for retreive data of all products supplied by market and search by product name.
 
-function getProductByNamefromMarket($id, $name) {    
+function getProductByNamefromMarket($id, $name) {
     $query = "SELECT product.id, product.name, product.stock, product.normal_price, product.disc_price, product.expr_date "
             . "FROM product "
-            . "WHERE ". $id . " = product.market_id "
+            . "WHERE " . $id . " = product.market_id "
             . "AND UPPER(name) LIKE "
             . '"%' . $name . '%"';
-    
+
     try {
         global $db;
         $stmt = $db->query($query);
@@ -252,7 +254,7 @@ function getAllPurchaseHistory() {
             . "ON product.id = purchase_history.product_id "
             . "JOIN user "
             . "ON user.id = purchase_history.cust_id ";
-    
+
     try {
         global $db;
         $stmt = $db->query($query);
@@ -260,9 +262,8 @@ function getAllPurchaseHistory() {
         header("Content-Type: application/json");
         echo json_encode($purchase_history);
     } catch (PDOException $e) {
-        echo '{"error": {"text":' . $e->getMessage() . '}}';        
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
-
 }
 
 // Used for retreive data of cart.
@@ -295,16 +296,16 @@ function addProduct() {
     $normalPrice = $products->normal_price;
     $discPrice = $products->disc_price;
     $exprDate = $products->expr_date;
-    
+
     $query = "INSERT INTO product"
             . "(name, stock, market_id, normal_price, disc_price, expr_date) "
             . "VALUES ('$name', '$stock', '$marketId', '$normalPrice', '$discPrice', '$exprDate') ";
-    
+
     try {
-       global $db;
-       $db->exec($query);
-       $products->id = $db->lastInsertId();
-       echo json_encode($products);
+        global $db;
+        $db->exec($query);
+        $products->id = $db->lastInsertId();
+        echo json_encode($products);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
@@ -329,18 +330,18 @@ function updateProduct($id) {
     $normalPrice = $products->normal_price;
     $discPrice = $products->disc_price;
     $exprDate = $products->expr_date;
-    
+
     $query = "UPDATE product "
             . "SET name = '$name', "
             . "stock = '$stock', normal_price = '$normalPrice',"
             . " disc_price = '$discPrice', expr_date = '$exprDate' "
-            . "WHERE id = ? "; 
-            
+            . "WHERE id = ? ";
+
     try {
-       global $db;
-       $stmt = $db->prepare($query);
-       $stmt->execute([$id]);
-       echo json_encode($products);
+        global $db;
+        $stmt = $db->prepare($query);
+        $stmt->execute([$id]);
+        echo json_encode($products);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
@@ -353,19 +354,35 @@ function addCart() {
     $productId = $cart->product_id;
     $custId = $cart->cust_id;
     $amount = $cart->amount;
-    
-    $query = "INSERT INTO cart"
-            . "(product_id, cust_id, amount) "
-            . "VALUES ('$productId', '$custId', '$amount') ";
-    
+
+    $query_1 = "SELECT * FROM cart WHERE cust_id = ? "
+            . "AND product_id = ? ";
     try {
-       global $db;
-       $db->exec($query);
-       echo json_encode($cart);
+
+        global $db;
+        $stmt = $db->prepare($query_1);
+        $stmt->execute([$custId, $productId]);
+        
+
+        if ($stmt->rowCount() > 0) {
+            $old_amount = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["amount"];
+            $query = "UPDATE cart "
+                    . "SET amount = CAST($old_amount AS INT) + CAST($amount AS INT) "
+                    . "WHERE product_id = ? "
+                    . "AND cust_id = ? ";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$productId, $custId]);
+        } else {
+            $query_2 = "INSERT INTO cart"
+                    . "(product_id, cust_id, amount) "
+                    . "VALUES ('$productId', '$custId', '$amount') ";
+
+            $db->exec($query_2);
+        }
+        echo json_encode($cart);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
-
 }
 
 function updateCart($idC, $idP) {
@@ -373,17 +390,17 @@ function updateCart($idC, $idP) {
     $request = $app->request();
     $cart = json_decode($request->getBody());
     $amount = $cart->amount;
-    
+
     $query = "UPDATE cart "
             . "SET amount = '$amount' "
             . "WHERE product_id = ? "
             . "AND cust_id = ? ";
-    
+
     try {
-       global $db;
-       $stmt = $db->prepare($query);
-       $stmt->execute([$idP, $idC]);
-       echo json_encode($cart);
+        global $db;
+        $stmt = $db->prepare($query);
+        $stmt->execute([$idP, $idC]);
+        echo json_encode($cart);
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
@@ -397,5 +414,17 @@ function deleteCart($idC, $idP) {
     } catch (PDOException $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
+}
 
+function getProductCount() {
+    $query = "SELECT 1 FROM product";
+
+    try {
+        global $db;
+        $stmt = $db->query($query);
+        $cnt =  $stmt->rowCount();
+        echo json_encode($cnt);
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
 }

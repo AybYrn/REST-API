@@ -1,5 +1,5 @@
 <?php
-    $userId = 8;
+$userId = 8;
 ?>
 <!DOCTYPE html>
 <!--
@@ -20,6 +20,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
         <link rel="manifest" href="images/favicon/site.webmanifest">
 
         <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+        <script src="./js/pagination.min.js"></script>
 
         <style>
             :root {
@@ -61,12 +62,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
         <header></header>
         <script>
             $(document).ready(function () {
-
                 function addProductToCart(id) {
                     $.ajax({
                         type: "POST",
                         url: "http://localhost/WD_Assesment_1/api/cart",
-                        data: JSON.stringify({product_id: id, cust_id: <?= $userId ?> , amount:1}),
+                        data: JSON.stringify({product_id: id, cust_id: <?= $userId ?>, amount: 1}),
                         success: function (data) {
                             data = JSON.parse(data);
                         }
@@ -75,7 +75,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost/WD_Assesment_1/api/products",
+                    url: "http://localhost/WD_Assesment_1/api/products/1",
                     success: function (data) {
                         data.forEach(p => {
                             var pic = {location: "default.png"};
@@ -92,22 +92,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                             if (p.disc_price === null) {
                                 p.disc_price = "";
                             }
-                            console.log(p);
                             $(".products").append(`
                                 <div class="col mb-5">
                                     <div class="card" style="width: 18rem;">
                                         <img src="./images/products/` + pic.location + `" class="card-img-top" alt="...">
                                         <div class="card-body text-end">
                                             <h5 class="card-title text-center text-truncate" title="` + p.name + `">` + p.name + `</h5>
-                                            <p class="card-text">` + p.normal_price + ` € ` + p.disc_price + ` ` + p.expr_date + `</p>
+                                            <p class="card-text text-danger">` + p.normal_price + ` € ` + p.disc_price + `</p>
+                                            <p class="card-text">` + p.expr_date + `</p>
                                             <a href="#" class="btn btn-warning rounded-pill add" id="` + p.id + `">Add</a>
                                         </div>
                                     </div>
                                 </div>
                             `);
-                        }                                
+                        }
                         );
-                        $(".add").click(function (){
+                        $(".add").click(function () {
                             addProductToCart(parseInt($(this).attr("id")));
                         });
                     },
@@ -120,6 +120,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
             <div class="row products"></div>
         </div>
-
     </body>
 </html>

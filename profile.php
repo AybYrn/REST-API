@@ -66,8 +66,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                 success: function (data) {
                     data = JSON.parse(data);
                     user = data;
-                    console.log(user);
-                    console.log(user.name);
                 },
                 async: false
             });

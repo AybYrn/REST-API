@@ -93,7 +93,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                             items = items.filter(i => {
                                 return parseInt(i.product_id) !== id;
                             });
-                            console.log(items);
                             updateItemCount();
                             updatePrice();
                             updateProductPrice();
@@ -186,7 +185,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 function () {
                                     var amountUpdate = parseInt($(this).val());
                                     var pId = $(this).parent().attr('id');
-                                    console.log(items);
+                                    e.log(items);
                                     if (amountUpdate === 0) {
                                         $(this).parent().parent().parent().prev().children("button.delete").trigger("click");
                                     } else
