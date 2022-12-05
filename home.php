@@ -1,5 +1,5 @@
 <?php
-$userId = 8;
+$userId = 7;
 ?>
 <!DOCTYPE html>
 <!--
@@ -21,6 +21,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
 
         <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
         <script src="./js/pagination.min.js"></script>
+        <script src="./js/bootstrap.bundle.js"></script>
 
         <style>
             :root {
@@ -72,6 +73,47 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                         }
                     });
                 }
+                
+                function searchProduct(word){
+                    $(".products").html("");
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost/WD_Assesment_1/api/product/searchProductName/" + word,
+                        success: function (data){
+                            console.log(data);
+                            data.forEach(p => {
+                            var pic = {location: "default.png"};
+                            $.ajax({
+                                type: "GET",
+                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.id,
+                                success: function (data) {
+                                    var pics = JSON.parse(data);
+                                    if (pics.length !== 0)
+                                        pic = pics[0];
+                                },
+                                async: false
+                            });
+                            if (p.disc_price === null) {
+                                p.disc_price = "";
+                            }
+                            $(".products").append(`
+                                <div class="col mb-5">
+                                    <div class="card" style="width: 18rem;">
+                                        <img src="./images/products/` + pic.location + `" class="card-img-top" alt="...">
+                                        <div class="card-body text-end">
+                                            <h5 class="card-title text-center text-truncate" title="` + p.name + `">` + p.name + `</h5>
+                                            <p class="card-text text-danger">` + p.normal_price + ` € ` + p.disc_price + `</p>
+                                            <p class="card-text">` + p.expr_date + `</p>
+                                            <a href="#" class="btn btn-warning rounded-pill add" id="` + p.id + `">Add</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    },
+                    dataType: "json"
+                    });
+                }
 
                 $.ajax({
                     type: "GET",
@@ -105,10 +147,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                     </div>
                                 </div>
                             `);
-                        }
-                        );
+                        });
                         $(".add").click(function () {
                             addProductToCart(parseInt($(this).attr("id")));
+                        });
+                        
+                        $("#searchbtn").click(function (e) {
+                            e.preventDefault();
+                            searchProduct($("#search").val());
                         });
                     },
                     dataType: "json"

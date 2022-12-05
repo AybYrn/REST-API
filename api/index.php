@@ -31,6 +31,8 @@ $app->get('/purchaseHistory/:id', 'getPurchaseHistory'); //get purchase history 
 $app->post('/product', 'addProduct'); //Insertion of product by market.
 $app->put('/product/:id', 'updateProduct'); //Update product information for market user.
 $app->delete('/product/:id', 'deleteProduct'); //Delete product for market user.
+
+$app->put('/profile/:id', 'updateProfile');
  
 $app->post('/cart', 'addCart'); //To insert a product to cart by customer user.
 $app->put('/cart/:idCust/:idProduct', 'updateCart'); //Update cart by customer.

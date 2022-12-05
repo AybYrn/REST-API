@@ -1,5 +1,5 @@
 <?php
-$userId = 8;
+$userId = 7;
 ?>
 <!DOCTYPE html>
 <!--
@@ -185,7 +185,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                                 function () {
                                     var amountUpdate = parseInt($(this).val());
                                     var pId = $(this).parent().attr('id');
-                                    e.log(items);
+                                    
                                     if (amountUpdate === 0) {
                                         $(this).parent().parent().parent().prev().children("button.delete").trigger("click");
                                     } else

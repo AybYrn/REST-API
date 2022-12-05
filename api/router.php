@@ -168,7 +168,7 @@ function getProductById($id) {
 // Used for retreive data of products by name.
 
 function getProductByName($name) {
-    $query = "SELECT name, normal_price, disc_price, expr_date FROM product "
+    $query = "SELECT * FROM product "
             . "WHERE UPPER(name) LIKE "
             . '"%' . $name . '%"';
 
@@ -362,7 +362,6 @@ function addCart() {
         global $db;
         $stmt = $db->prepare($query_1);
         $stmt->execute([$custId, $productId]);
-        
 
         if ($stmt->rowCount() > 0) {
             $old_amount = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]["amount"];
@@ -422,9 +421,37 @@ function getProductCount() {
     try {
         global $db;
         $stmt = $db->query($query);
-        $cnt =  $stmt->rowCount();
+        $cnt = $stmt->rowCount();
         echo json_encode($cnt);
     } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}}';
+    }
+}
+
+function updateProfile($id) {
+    global $app;
+    $request = $app->request();
+    $profile = json_decode($request->getBody());
+    $email = $profile->email;
+    $phone = $profile->phone;
+    $address = $profile->address;
+
+    $query1 = "UPDATE user "
+            . "SET email = '$email' , phone_number = '$phone' "
+            . "WHERE id = ? ";
+    
+    $query2 = "UPDATE customer "
+            . "SET address = '$address' "
+            . "WHERE id = ? ";
+
+    try {
+        global $db;
+        $stmt1 = $db->prepare($query1);
+        $stmt1->execute([$id]);
+        $stmt2 = $db->prepare($query2);
+        $stmt2->execute([$id]);
+        echo json_encode($profile);
+    } catch (Exception $e) {
         echo '{"error": {"text":' . $e->getMessage() . '}}';
     }
 }
