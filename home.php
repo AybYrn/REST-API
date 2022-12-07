@@ -78,7 +78,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                     $(".products").html("");
                     $.ajax({
                         type: "GET",
-                        url: "http://localhost/WD_Assesment_1/api/products/searchProductName/" + word,
+                        url: "http://localhost/WD_Assesment_1/api/products/search/name/" + word,
                         success: function (data){
                             console.log(data);
                             data.forEach(p => {

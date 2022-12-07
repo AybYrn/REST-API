@@ -60,7 +60,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                 var user;
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost/WD_Assesment_1/api/customer/<?= $userId ?>",
+                    url: "http://localhost/WD_Assesment_1/api/customers/<?= $userId ?>",
                     success: function (data) {
                         data = JSON.parse(data);
                         user = data;
