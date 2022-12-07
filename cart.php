@@ -112,7 +112,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                             var pic = {location: "default.png"};
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.product_id,
+                                url: "http://localhost/WD_Assesment_1/api/products/pic/" + p.product_id,
                                 success: function (data) {
                                     var pics = JSON.parse(data);
                                     if (pics.length !== 0) {

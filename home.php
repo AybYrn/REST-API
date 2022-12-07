@@ -78,14 +78,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                     $(".products").html("");
                     $.ajax({
                         type: "GET",
-                        url: "http://localhost/WD_Assesment_1/api/product/searchProductName/" + word,
+                        url: "http://localhost/WD_Assesment_1/api/products/searchProductName/" + word,
                         success: function (data){
                             console.log(data);
                             data.forEach(p => {
                             var pic = {location: "default.png"};
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.id,
+                                url: "http://localhost/WD_Assesment_1/api/products/pic/" + p.id,
                                 success: function (data) {
                                     var pics = JSON.parse(data);
                                     if (pics.length !== 0)
@@ -123,7 +123,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/html.html to edit this
                             var pic = {location: "default.png"};
                             $.ajax({
                                 type: "GET",
-                                url: "http://localhost/WD_Assesment_1/api/product/pic/" + p.id,
+                                url: "http://localhost/WD_Assesment_1/api/products/pic/" + p.id,
                                 success: function (data) {
                                     var pics = JSON.parse(data);
                                     if (pics.length !== 0)
